@@ -25,13 +25,13 @@ def load_rnaseq_data(seqdata_path):  # Loads RNA dataset for processing
     return rnaseq_data  # Outputs the name and transcription level
 
 
-def update_file(input_dir, output_dir, rnaseq_info):  #  Sets format of output file
+def update_file(input_dir, output_dir, rnaseq_info):  #  Defines function to create updated files
     seq_data = list()  # Formats the data as a list
-    dir_list = os.listdir(input_dir)  # Sets path of directory
+    dir_list = os.listdir(input_dir)  # Lists files in directory
     for file in dir_list:  # Iterates through the files in the input directory of Yeast genes
         path = os.path.join(input_dir, file)  # Creates path for each file 
         with open(path) as f:  # Opens each file in the set Yeast files
-            text = f.read().splitlines()  # Grabs the text of each file
+            text = f.read().splitlines()  # Grabs the text of each file, and splits along lines
         orf_name = file.replace(".txt", "")  # Removes the .txt from each file name
        
         
@@ -49,11 +49,11 @@ def update_file(input_dir, output_dir, rnaseq_info):  #  Sets format of output f
         else:  # If there isnt data... 
             gc_percent = 0 # %GC = 0
 
-        output_path = os.path.join(output_dir, file) # Writes the data including sequence, name and transcription evel to an new directory
+        output_path = os.path.join(output_dir, file) # Defines the file path to output the updated yeast info to
         with open(output_path, 'w') as of:  # Writes the data to a new file
             of.writelines(text)   # Inserts the text to the file
         seq_data.append((orf_name, trans_level, gc_percent))  # Adds name, transcription level and GC content
-    return seq_data  # Goes back and repeats
+    return seq_data  # Returns data to main code for plotting later
 
  
    
