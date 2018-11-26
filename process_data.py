@@ -25,7 +25,7 @@ def load_rnaseq_data(seqdata_path):  # Loads RNA dataset for processing
     return rnaseq_data  # Outputs the name and transcription level
 
 
-def update_file(input_dir, output_dir, rnaseq_info):  #  Defines function to create updated files
+def update_file(input_dir, output_dir, rnaseq_info):  # Defines function to create updated files
     seq_data = list()  # Formats the data as a list
     dir_list = os.listdir(input_dir)  # Lists files in directory
     for file in dir_list:  # Iterates through the files in the input directory of Yeast genes
@@ -33,15 +33,18 @@ def update_file(input_dir, output_dir, rnaseq_info):  #  Defines function to cre
         with open(path) as f:  # Opens each file in the set Yeast files
             text = f.read().splitlines()  # Grabs the text of each file, and splits along lines
         orf_name = file.replace(".txt", "")  # Removes the .txt from each file name
-       
-        
+
         if orf_name in rnaseq_info:  # Checks to see if the Orf name is in the RNA dataset
             trans_level = rnaseq_info[orf_name]  # If it is, the transcription level is pulled from the list
-        else: # If not...
+        else:  # If not...
             trans_level = "NA"  # Set the transcription level to "NA"
         text[0] += " " + orf_name + " " + trans_level + "\n"  # Rewrites the text of the yeast gene file to include the Orf name and transcription level
-  
-# GC Content calculations
+
+        output_path = os.path.join(output_dir, file)  # Defines the file path to output the updated yeast info to
+        with open(output_path, 'w') as of:  # Writes the data to a new file
+            of.writelines(text)  # Inserts the text to the file
+
+        # GC Content calculations
         if len(text) == 2:  # If the data has 2 lines, continue. Otherwise, ignore it. (Basically just for YEL076C
             count_gc = len(re.findall("[G|C]", text[1]))  # Finds number of G's and C's in the sequence
             count_all = len(text[1])  # Finds overall length of sequence
@@ -49,17 +52,13 @@ def update_file(input_dir, output_dir, rnaseq_info):  #  Defines function to cre
         else:  # If there isnt data... 
             gc_percent = 0 # %GC = 0
 
-        output_path = os.path.join(output_dir, file) # Defines the file path to output the updated yeast info to
-        with open(output_path, 'w') as of:  # Writes the data to a new file
-            of.writelines(text)   # Inserts the text to the file
         seq_data.append((orf_name, trans_level, gc_percent))  # Adds name, transcription level and GC content
     return seq_data  # Returns data to main code for plotting later
 
- 
-   
+
 def plot_transcription_gc(seq_data):  # Beginning of plotting
-    trans_level_list = [x[1] for x in seq_data if x[1] != "NA"]  # Finds transcription level and sets it to X data
-    gc_pct_list = [x[2] for x in seq_data if x[1] != "NA"]  # Finds GC content and sets it to Y data
+    trans_level_list = [float(x[1]) for x in seq_data if x[1] != "NA"]  # Finds transcription level and sets it to X data
+    gc_pct_list = [float(x[2]) for x in seq_data if x[1] != "NA"]  # Finds GC content and sets it to Y data
 
     plot = plt.scatter(trans_level_list, gc_pct_list, s=3)  # Plots Y vs X
     plt.xlabel("Transcription Level")  # Sets X label
