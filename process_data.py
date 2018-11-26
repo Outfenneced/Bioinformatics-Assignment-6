@@ -1,4 +1,7 @@
-# Example comment
+"""
+Coder: William Thompson
+Commenter: James Oakes
+"""
 import os  # <-- self explanatory
 import pandas  # <-- self explanatory
 import re  # <-- self explanatory
