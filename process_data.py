@@ -3,6 +3,8 @@ import os  # <-- self explanatory
 import pandas  # <-- self explanatory
 import re  # <-- self explanatory
 import csv  # <-- self explanatory
+from sklearn.linear_model import LinearRegression
+import numpy as np
 import matplotlib.pyplot as plt  # Imports matplotlib and renames it plt 
 
 INPUT_DIR = "data/YeastGenes"  # Sets the path of the Yeast Genome data
@@ -23,6 +25,13 @@ def load_rnaseq_data(seqdata_path):  # Loads RNA dataset for processing
         transcription_level = regex_match.group(3)  # Pulls transcription level from the data
         rnaseq_data[orf_name] = transcription_level  # Associates transcription level with the gene name
     return rnaseq_data  # Outputs the name and transcription level
+
+
+def calculate_gc_percent(sequence):
+    count_gc = len(re.findall("[G|C]", sequence))  # Finds number of G's and C's in the sequence
+    count_all = len(sequence)  # Finds overall length of sequence
+    gc_percent = count_gc / count_all  # Expresses the GC content as # of G and C over the total length of the sequence
+    return gc_percent
 
 
 def update_file(input_dir, output_dir, rnaseq_info):  # Defines function to create updated files
@@ -46,11 +55,9 @@ def update_file(input_dir, output_dir, rnaseq_info):  # Defines function to crea
 
         # GC Content calculations
         if len(text) == 2:  # If the data has 2 lines, continue. Otherwise, ignore it. (Basically just for YEL076C
-            count_gc = len(re.findall("[G|C]", text[1]))  # Finds number of G's and C's in the sequence
-            count_all = len(text[1])  # Finds overall length of sequence
-            gc_percent = count_gc/count_all  # Expresses the GC content as # of G and C over the total length of the sequence
-        else:  # If there isnt data... 
-            gc_percent = 0 # %GC = 0
+            gc_percent = calculate_gc_percent(text[1])
+        else:  # If there isnt data...
+            gc_percent = 0  # %GC = 0
 
         seq_data.append((orf_name, trans_level, gc_percent))  # Adds name, transcription level and GC content
     return seq_data  # Returns data to main code for plotting later
@@ -64,6 +71,12 @@ def plot_transcription_gc(seq_data):  # Beginning of plotting
     plt.xlabel("Transcription Level")  # Sets X label
     plt.ylabel("GC%")  # Sets Y label
     plt.title("Transcription Level vs GC%")  # Sets Title
+
+    trans_level_list_2d = np.array(trans_level_list).reshape(-1, 1)
+    regression = LinearRegression()
+    regression.fit(trans_level_list_2d, gc_pct_list)
+    plt.plot(trans_level_list, regression.predict(trans_level_list_2d), color="green")
+
     plt.show()  # Displays plot
 
 
