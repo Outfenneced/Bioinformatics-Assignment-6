@@ -89,6 +89,6 @@ if __name__ == '__main__':  # Tells python to run this if this is the file is be
         writer = csv.writer(csv_file)  # Creates CSV file
         writer.writerows(seq_data)  # Writes data to file
 
-        plot_transcription_gc(seq_data)  # calls plot creation function
+    plot_transcription_gc(seq_data)  # calls plot creation function
 
 
