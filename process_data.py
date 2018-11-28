@@ -6,7 +6,6 @@ import os  # <-- self explanatory
 import pandas  # <-- self explanatory
 import re  # <-- self explanatory
 import csv  # <-- self explanatory
-from sklearn import linear_model
 import numpy as np
 import matplotlib.pyplot as plt  # Imports matplotlib and renames it plt 
 
@@ -75,10 +74,10 @@ def plot_transcription_gc(seq_data):  # Beginning of plotting
     plt.ylabel("GC%")  # Sets Y label
     plt.title("Transcription Level vs GC%")  # Sets Title
 
-    trans_level_list_2d = np.array(trans_level_list).reshape(-1, 1)
-    regression = linear_model.LinearRegression()
-    regression.fit(trans_level_list_2d, gc_pct_list)
-    plt.plot(trans_level_list, regression.predict(trans_level_list_2d), color="green")
+    linear_regression = np.polyfit(trans_level_list, gc_pct_list, 1)
+    linear_x_vals = np.linspace(min(trans_level_list), max(trans_level_list), 2)
+    linear_y_vals = np.polyval(linear_regression, linear_x_vals)
+    plt.plot(linear_x_vals, linear_y_vals, color="green")
 
     plt.show()  # Displays plot
 
