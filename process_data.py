@@ -6,7 +6,7 @@ import os  # <-- self explanatory
 import pandas  # <-- self explanatory
 import re  # <-- self explanatory
 import csv  # <-- self explanatory
-import numpy as np
+import numpy as np  # <-- imports numpy library and renames it to np
 import matplotlib.pyplot as plt  # Imports matplotlib and renames it plt 
 
 INPUT_DIR = "data/YeastGenes"  # Sets the path of the Yeast Genome data
@@ -74,10 +74,10 @@ def plot_transcription_gc(seq_data):  # Beginning of plotting
     plt.ylabel("GC%")  # Sets Y label
     plt.title("Transcription Level vs GC%")  # Sets Title
 
-    linear_regression = np.polyfit(trans_level_list, gc_pct_list, 1)
-    linear_x_vals = np.linspace(min(trans_level_list), max(trans_level_list), 2)
-    linear_y_vals = np.polyval(linear_regression, linear_x_vals)
-    plt.plot(linear_x_vals, linear_y_vals, color="green")
+    linear_regression = np.polyfit(trans_level_list, gc_pct_list, 1)  # Creates linear regression model for the data
+    linear_x_vals = np.linspace(min(trans_level_list), max(trans_level_list), 2)  # Generates a matrix for the x values 
+    linear_y_vals = np.polyval(linear_regression, linear_x_vals)  # Uses regression to create the y values for the x values
+    plt.plot(linear_x_vals, linear_y_vals, color="green")  # Creates the plot with a green line
 
     plt.show()  # Displays plot
 
